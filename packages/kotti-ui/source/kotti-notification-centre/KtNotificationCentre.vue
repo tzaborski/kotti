@@ -1,35 +1,76 @@
 <template>
 	<teleport to="body">
 		<transition name="kt-notification-centre">
-			<div v-if="isOpen" aria-label="Notification Centre" class="kt-notification-centre__mask" role="dialog"
-				@click.self="onMaskClick">
+			<div
+				v-if="isOpen"
+				aria-label="Notification Centre"
+				class="kt-notification-centre__mask"
+				role="dialog"
+				@click.self="onMaskClick"
+			>
 				<div class="kt-notification-centre__panel">
 					<div class="kt-notification-centre__header">
 						<div class="kt-notification-centre__title-row">
-							<i class="yoco kt-notification-centre__bell-icon" v-text="Yoco.Icon.BELL" />
+							<i
+								class="yoco kt-notification-centre__bell-icon"
+								v-text="Yoco.Icon.BELL"
+							/>
 							<h2 class="kt-notification-centre__title">Notifications</h2>
-							<span v-if="unreadCount > 0" class="kt-notification-centre__count">
+							<span
+								v-if="unreadCount > 0"
+								class="kt-notification-centre__count"
+							>
 								{{ unreadCount }}
 							</span>
 						</div>
-						<button aria-label="Close notification centre" class="kt-notification-centre__close"
-							@click="close()">
+						<button
+							aria-label="Close notification centre"
+							class="kt-notification-centre__close"
+							@click="close()"
+						>
 							<i class="yoco" v-text="Yoco.Icon.CLOSE" />
 						</button>
 					</div>
 
-					<NotificationToolbar :filter="filter" :sortOrder="sortOrder" :unreadCount="unreadCount"
-						@mark-all-read="onMarkAllRead" @remove-all="onRemoveAll" @update:filter="onUpdateFilter"
-						@update:sort-order="onUpdateSortOrder" />
+					<NotificationToolbar
+						:filter="filter"
+						:sortOrder="sortOrder"
+						:unreadCount="unreadCount"
+						@markAllRead="onMarkAllRead"
+						@removeAll="onRemoveAll"
+						@update:filter="onUpdateFilter"
+						@update:sortOrder="onUpdateSortOrder"
+					/>
 
 					<div class="kt-notification-centre__list">
 						<TransitionGroup name="kt-notification-centre-item">
-							<NotificationItem v-for="notification in filteredNotifications" :key="notification.id"
-								:notification="notification" @delete="onDelete" @toggleRead="onToggleRead" />
+							<template
+								v-for="notification in filteredNotifications"
+								:key="notification.id"
+							>
+								<slot
+									name="item"
+									:notification="notification"
+									:onDelete="() => onDelete(notification.id)"
+									:onToggleRead="() => onToggleRead(notification.id)"
+								>
+									<KtNotificationItem
+										:notification="notification"
+										@delete="onDelete"
+										@toggleRead="onToggleRead"
+									/>
+								</slot>
+							</template>
 						</TransitionGroup>
 
-						<div v-if="filteredNotifications.length === 0" class="kt-notification-centre__empty">
-							<i class="yoco kt-notification-centre__empty-icon" v-text="Yoco.Icon.BELL" />
+						<div
+							v-if="filteredNotifications.length === 0"
+							class="kt-notification-centre__empty"
+						>
+							<i
+								class="yoco kt-notification-centre__empty-icon"
+								v-text="Yoco.Icon.BELL"
+							/>
 							<p class="kt-notification-centre__empty-text">No notifications</p>
 						</div>
 					</div>
@@ -46,15 +87,15 @@ import { Yoco } from '@3yourmind/yoco'
 
 import { makeProps } from '../make-props'
 
-import NotificationItem from './components/NotificationItem.vue'
 import NotificationToolbar from './components/NotificationToolbar.vue'
 import type { NotificationCentreStore } from './create-notification-centre'
+import KtNotificationItem from './KtNotificationItem.vue'
 import { KottiNotificationCentre } from './types'
 
 export default defineComponent({
 	name: 'KtNotificationCentre',
 	components: {
-		NotificationItem,
+		KtNotificationItem,
 		NotificationToolbar,
 	},
 	props: makeProps(KottiNotificationCentre.propsSchema),

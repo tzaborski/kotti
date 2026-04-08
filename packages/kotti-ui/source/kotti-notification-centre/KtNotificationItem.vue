@@ -1,27 +1,50 @@
 <template>
-	<div :aria-label="notification.title" :class="{
-		'kt-notification-item': true,
-		'kt-notification-item--is-unread': isUnread,
-	}" role="article">
+	<div
+		:aria-label="notification.title"
+		:class="{
+			'kt-notification-item': true,
+			'kt-notification-item--is-unread': isUnread,
+		}"
+		role="article"
+	>
 		<!-- #item slot: replaces the entire item layout -->
-		<slot :absoluteTimestamp="absoluteTimestamp" :isUnread="isUnread" name="item" :notification="notification"
-			:onDelete="onDelete" :onToggleRead="onToggleRead" :relativeTimestamp="relativeTimestamp">
-			<div class="kt-notification-item__icon" :style="{
-				color: typeStyle.darkColor,
-				backgroundColor: typeStyle.backgroundColor,
-			}">
+		<slot
+			:absoluteTimestamp="absoluteTimestamp"
+			:isUnread="isUnread"
+			name="item"
+			:notification="notification"
+			:onDelete="onDelete"
+			:onToggleRead="onToggleRead"
+			:relativeTimestamp="relativeTimestamp"
+		>
+			<div
+				class="kt-notification-item__icon"
+				:style="{
+					color: typeStyle.darkColor,
+					backgroundColor: typeStyle.backgroundColor,
+				}"
+			>
 				<i class="yoco" v-text="typeStyle.icon" />
 			</div>
 
 			<!-- #content slot: replaces the middle content area -->
 			<div class="kt-notification-item__content">
-				<slot :absoluteTimestamp="absoluteTimestamp" :isUnread="isUnread" name="content"
-					:notification="notification" :relativeTimestamp="relativeTimestamp">
+				<slot
+					:absoluteTimestamp="absoluteTimestamp"
+					:isUnread="isUnread"
+					name="content"
+					:notification="notification"
+					:relativeTimestamp="relativeTimestamp"
+				>
 					<div class="kt-notification-item__header">
 						<span class="kt-notification-item__title">
 							{{ notification.title }}
 						</span>
-						<span v-if="isUnread" aria-label="Unread" class="kt-notification-item__unread-dot" />
+						<span
+							v-if="isUnread"
+							aria-label="Unread"
+							class="kt-notification-item__unread-dot"
+						/>
 					</div>
 
 					<p class="kt-notification-item__text">
@@ -29,7 +52,10 @@
 					</p>
 
 					<div class="kt-notification-item__meta">
-						<span class="kt-notification-item__timestamp" :title="absoluteTimestamp">
+						<span
+							class="kt-notification-item__timestamp"
+							:title="absoluteTimestamp"
+						>
 							{{ relativeTimestamp }}
 						</span>
 					</div>
@@ -38,13 +64,37 @@
 
 			<!-- #actions slot: replaces the action buttons -->
 			<div class="kt-notification-item__actions" @click.stop>
-				<slot :isUnread="isUnread" name="actions" :notification="notification" :onDelete="onDelete"
-					:onToggleRead="onToggleRead">
-					<KtButton :aria-label="isUnread ? 'Mark as read' : 'Mark as unread'"
-						:helpText="isUnread ? 'Mark as read' : 'Mark as unread'" :icon="Yoco.Icon.CIRCLE_CHECK"
-						size="small" :type="isUnread ? 'primary' : 'text'" @click="onToggleRead" />
-					<KtButton aria-label="Delete notification" helpText="Delete notification" :icon="Yoco.Icon.TRASH"
-						size="small" @click="onDelete" />
+				<slot
+					:isUnread="isUnread"
+					name="actions"
+					:notification="notification"
+					:onDelete="onDelete"
+					:onToggleRead="onToggleRead"
+				>
+					<!-- <KtButton
+						:aria-label="isUnread ? 'Mark as read' : 'Mark as unread'"
+						:helpText="isUnread ? 'Mark as read' : 'Mark as unread'"
+						:icon="Yoco.Icon.CIRCLE_CHECK"
+						size="small"
+						:type="isUnread ? 'primary' : 'text'"
+						@click="onToggleRead"
+					/> -->
+					<KtButton
+						v-if="isUnread"
+						aria-label="Mark as read"
+						helpText="Mark as read"
+						:icon="Yoco.Icon.CIRCLE_CHECK"
+						size="small"
+						type="primary"
+						@click="onToggleRead"
+					/>
+					<KtButton
+						aria-label="Delete notification"
+						helpText="Delete notification"
+						:icon="Yoco.Icon.TRASH"
+						size="small"
+						@click="onDelete"
+					/>
 				</slot>
 			</div>
 		</slot>
@@ -56,10 +106,10 @@ import { computed, defineComponent, type PropType } from 'vue'
 
 import { Yoco } from '@3yourmind/yoco'
 
-import KtButton from '../../kotti-button/KtButton.vue'
-import { useI18nContext } from '../../kotti-i18n/hooks'
-import { getRelativeTime } from '../../utilities/date'
-import type { KottiNotificationCentre } from '../types'
+import KtButton from '../kotti-button/KtButton.vue'
+import { getRelativeTime } from '../utilities/date'
+
+import type { KottiNotificationCentre } from './types'
 
 const TYPE_STYLES: Record<
 	KottiNotificationCentre.NotificationType,
@@ -92,7 +142,7 @@ const TYPE_STYLES: Record<
 }
 
 export default defineComponent({
-	name: 'NotificationItem',
+	name: 'KtNotificationItem',
 	components: {
 		KtButton,
 	},
@@ -105,8 +155,6 @@ export default defineComponent({
 
 	emits: ['delete', 'toggleRead'],
 	setup(props, { emit }) {
-		const i18nContext = useI18nContext()
-		dayjs.locale(i18nContext.locale)
 		const isUnread = computed(() => props.notification.toggle === 'unread')
 
 		const typeStyle = computed(() => TYPE_STYLES[props.notification.type])

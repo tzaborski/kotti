@@ -1,16 +1,25 @@
 import { z } from 'zod'
 
-export namespace KottiNotificationCentre {
-	export const notificationTypeSchema = z.enum([
-		'error',
-		'info',
-		'success',
-		'warning',
-	])
-	export type NotificationType = z.infer<typeof notificationTypeSchema>
+import { createLooseZodEnumSchema } from '../zod-utilities/enums'
 
-	export const notificationToggleSchema = z.enum(['read', 'unread'])
-	export type NotificationToggle = z.infer<typeof notificationToggleSchema>
+export namespace KottiNotificationCentre {
+	export enum NotificationType {
+		ERROR = 'error',
+		INFO = 'info',
+		SUCCESS = 'success',
+		WARNING = 'warning',
+	}
+
+	export enum NotificationToggle {
+		READ = 'read',
+		UNREAD = 'unread',
+	}
+
+	export const notificationTypeSchema =
+		createLooseZodEnumSchema(NotificationType)
+
+	export const notificationToggleSchema =
+		createLooseZodEnumSchema(NotificationToggle)
 
 	export const notificationSchema = z
 		.object({

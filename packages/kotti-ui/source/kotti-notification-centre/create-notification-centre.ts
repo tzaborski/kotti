@@ -5,7 +5,7 @@ import { KottiNotificationCentre } from './types'
 
 export type NotificationCentreStore<
 	T extends
-		KottiNotificationCentre.Notification = KottiNotificationCentre.Notification,
+		KottiNotificationCentre.NotificationInput = KottiNotificationCentre.NotificationInput,
 > = {
 	// State
 	filter: Ref<KottiNotificationCentre.Filter>
@@ -32,11 +32,15 @@ export type NotificationCentreStore<
 
 export const createNotificationCentre = <
 	T extends
-		KottiNotificationCentre.Notification = KottiNotificationCentre.Notification,
+		KottiNotificationCentre.NotificationInput = KottiNotificationCentre.NotificationInput,
 >(
 	initialNotifications: T[] = [],
 ): NotificationCentreStore<T> => {
-	const notifications = ref(initialNotifications) as Ref<T[]>
+	const notifications = ref(
+		initialNotifications.map((n) =>
+			KottiNotificationCentre.notificationSchema.parse(n),
+		),
+	) as Ref<T[]>
 	const isOpen = ref(false)
 
 	const sortOrder = ref<KottiNotificationCentre.SortOrder>('desc')

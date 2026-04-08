@@ -1,70 +1,108 @@
 <template>
 	<div class="kt-notification-toolbar">
 		<div class="kt-notification-toolbar__search">
-			<i class="yoco kt-notification-toolbar__search-icon" v-text="Yoco.Icon.SEARCH" />
-			<input class="kt-notification-toolbar__search-input" placeholder="Search notifications..." type="text"
-				:value="filter.searchQuery" @input="onSearchInput" />
+			<i
+				class="yoco kt-notification-toolbar__search-icon"
+				v-text="Yoco.Icon.SEARCH"
+			/>
+			<input
+				class="kt-notification-toolbar__search-input"
+				placeholder="Search notifications..."
+				type="text"
+				:value="filter.searchQuery"
+				@input="onSearchInput"
+			/>
 		</div>
 
 		<div class="kt-notification-toolbar__filters">
 			<div class="kt-notification-toolbar__filter-group">
-				<button :class="{
-					'kt-notification-toolbar__filter-btn': true,
-					'kt-notification-toolbar__filter-btn--active':
-						activeToggleFilter === 'unread',
-				}" @click="onToggleFilter('unread')">
+				<button
+					:class="{
+						'kt-notification-toolbar__filter-btn': true,
+						'kt-notification-toolbar__filter-btn--active':
+							activeToggleFilter === 'unread',
+					}"
+					@click="onToggleFilter('unread')"
+				>
 					Unread
 					<span v-if="unreadCount > 0" class="kt-notification-toolbar__badge">
 						{{ unreadCount }}
 					</span>
 				</button>
-				<button :class="{
-					'kt-notification-toolbar__filter-btn': true,
-					'kt-notification-toolbar__filter-btn--active':
-						activeToggleFilter === 'read',
-				}" @click="onToggleFilter('read')">
+				<button
+					:class="{
+						'kt-notification-toolbar__filter-btn': true,
+						'kt-notification-toolbar__filter-btn--active':
+							activeToggleFilter === 'read',
+					}"
+					@click="onToggleFilter('read')"
+				>
 					Read
 				</button>
 			</div>
 
 			<div class="kt-notification-toolbar__filter-group">
-				<button :class="{
-					'kt-notification-toolbar__filter-btn': true,
-					'kt-notification-toolbar__filter-btn--active':
-						activeTypeFilter === 'info',
-				}" @click="onTypeFilter('info')">
+				<button
+					:class="{
+						'kt-notification-toolbar__filter-btn': true,
+						'kt-notification-toolbar__filter-btn--active':
+							activeTypeFilter === 'info',
+					}"
+					@click="onTypeFilter('info')"
+				>
 					Info
 				</button>
-				<button :class="{
-					'kt-notification-toolbar__filter-btn': true,
-					'kt-notification-toolbar__filter-btn--active':
-						activeTypeFilter === 'warning',
-				}" @click="onTypeFilter('warning')">
+				<button
+					:class="{
+						'kt-notification-toolbar__filter-btn': true,
+						'kt-notification-toolbar__filter-btn--active':
+							activeTypeFilter === 'warning',
+					}"
+					@click="onTypeFilter('warning')"
+				>
 					Warning
 				</button>
-				<button :class="{
-					'kt-notification-toolbar__filter-btn': true,
-					'kt-notification-toolbar__filter-btn--active':
-						activeTypeFilter === 'error',
-				}" @click="onTypeFilter('error')">
+				<button
+					:class="{
+						'kt-notification-toolbar__filter-btn': true,
+						'kt-notification-toolbar__filter-btn--active':
+							activeTypeFilter === 'error',
+					}"
+					@click="onTypeFilter('error')"
+				>
 					Error
 				</button>
 			</div>
 		</div>
 
 		<div class="kt-notification-toolbar__actions">
-			<button class="kt-notification-toolbar__action-btn" title="Toggle sort order" @click="onToggleSortOrder">
-				<i class="yoco" v-text="sortOrder === 'desc' ? Yoco.Icon.ARROW_DOWN : Yoco.Icon.ARROW_UP
-					" />
-			</button>
-			<button class="kt-notification-toolbar__action-btn" title="Mark all as read" @click="onMarkAllRead">
-				<i class="yoco" v-text="Yoco.Icon.CHECK" />
-				Mark all read
-			</button>
-			<button class="kt-notification-toolbar__action-btn kt-notification-toolbar__action-btn--danger"
-				title="Remove all notifications" @click="onRemoveAll">
-				<i class="yoco" v-text="Yoco.Icon.TRASH" />
-			</button>
+			<KtButton
+				aria-label="Toggle sort order"
+				helpText="Toggle sort order"
+				:icon="sortOrder === 'desc' ? Yoco.Icon.ARROW_DOWN : Yoco.Icon.ARROW_UP"
+				size="small"
+				type="text"
+				@click="onToggleSortOrder"
+			/>
+
+			<KtButton
+				aria-label="Mark all as read"
+				:icon="Yoco.Icon.CHECK"
+				size="small"
+				type="text"
+				@click="onMarkAllRead"
+			>
+				Mark all as read
+			</KtButton>
+
+			<KtButton
+				aria-label="Remove all notifications"
+				helpText="Remove all notifications"
+				:icon="Yoco.Icon.TRASH"
+				size="small"
+				type="text"
+				@click="onRemoveAll"
+			/>
 		</div>
 	</div>
 </template>
@@ -73,13 +111,13 @@ import { computed, defineComponent, type PropType } from 'vue'
 
 import { Yoco } from '@3yourmind/yoco'
 
-import KtFieldText from '../../kotti-field-text/KtFieldText.vue'
+import KtButton from '../../kotti-button/KtButton.vue'
 import type { KottiNotificationCentre } from '../types'
 
 export default defineComponent({
 	name: 'NotificationToolbar',
 	components: {
-		KtFieldText,
+		KtButton,
 	},
 	props: {
 		filter: {
@@ -95,7 +133,7 @@ export default defineComponent({
 			type: Number,
 		},
 	},
-	emits: ['markAllRead', 'removeAll', 'update:filter', 'update:sort-order'],
+	emits: ['markAllRead', 'removeAll', 'update:filter', 'update:sortOrder'],
 	setup(props, { emit }) {
 		const activeToggleFilter = computed(() => props.filter.toggle)
 		const activeTypeFilter = computed(() => props.filter.type)
@@ -125,7 +163,7 @@ export default defineComponent({
 				})
 			},
 			onToggleSortOrder: () => {
-				emit('update:sort-order', props.sortOrder === 'desc' ? 'asc' : 'desc')
+				emit('update:sortOrder', props.sortOrder === 'desc' ? 'asc' : 'desc')
 			},
 			onTypeFilter: (type: KottiNotificationCentre.NotificationType | null) => {
 				emit('update:filter', {
@@ -232,33 +270,6 @@ export default defineComponent({
 		gap: var(--unit-1);
 		align-items: center;
 		justify-content: flex-end;
-	}
-
-	&__action-btn {
-		display: flex;
-		gap: 4px;
-		align-items: center;
-		padding: 2px var(--unit-2);
-		font-size: var(--font-size-small);
-		color: var(--text-02);
-		cursor: pointer;
-		background: none;
-		border: 0;
-		border-radius: var(--border-radius);
-		transition: all 0.15s ease;
-
-		&:hover {
-			color: var(--text-01);
-			background-color: var(--ui-01);
-		}
-
-		&--danger:hover {
-			color: var(--support-error-dark);
-		}
-
-		.yoco {
-			font-size: var(--unit-4);
-		}
 	}
 }
 </style>
