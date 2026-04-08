@@ -1,6 +1,6 @@
 <template>
 	<div
-		:aria-label="notification.title"
+		:aria-label="title"
 		:class="{
 			'kt-notification-item': true,
 			'kt-notification-item--is-unread': isUnread,
@@ -12,7 +12,6 @@
 			:absoluteTimestamp="absoluteTimestamp"
 			:isUnread="isUnread"
 			name="item"
-			:notification="notification"
 			:onDelete="onDelete"
 			:onToggleRead="onToggleRead"
 			:relativeTimestamp="relativeTimestamp"
@@ -33,12 +32,11 @@
 					:absoluteTimestamp="absoluteTimestamp"
 					:isUnread="isUnread"
 					name="content"
-					:notification="notification"
 					:relativeTimestamp="relativeTimestamp"
 				>
 					<div class="kt-notification-item__header">
 						<span class="kt-notification-item__title">
-							{{ notification.title }}
+							{{ title }}
 						</span>
 						<span
 							v-if="isUnread"
@@ -48,7 +46,7 @@
 					</div>
 
 					<p class="kt-notification-item__text">
-						{{ notification.content }}
+						{{ content }}
 					</p>
 
 					<div class="kt-notification-item__meta">
@@ -67,18 +65,9 @@
 				<slot
 					:isUnread="isUnread"
 					name="actions"
-					:notification="notification"
 					:onDelete="onDelete"
 					:onToggleRead="onToggleRead"
 				>
-					<!-- <KtButton
-						:aria-label="isUnread ? 'Mark as read' : 'Mark as unread'"
-						:helpText="isUnread ? 'Mark as read' : 'Mark as unread'"
-						:icon="Yoco.Icon.CIRCLE_CHECK"
-						size="small"
-						:type="isUnread ? 'primary' : 'text'"
-						@click="onToggleRead"
-					/> -->
 					<KtButton
 						v-if="isUnread"
 						aria-label="Mark as read"
@@ -102,14 +91,16 @@
 </template>
 <script lang="ts">
 import dayjs from 'dayjs'
-import { computed, defineComponent, type PropType } from 'vue'
+import { computed, defineComponent } from 'vue'
 
 import { Yoco } from '@3yourmind/yoco'
 
 import KtButton from '../kotti-button/KtButton.vue'
+import type { KottiNotificationCentre } from '../kotti-notification-centre/types'
+import { makeProps } from '../make-props'
 import { getRelativeTime } from '../utilities/date'
 
-import type { KottiNotificationCentre } from './types'
+import { KottiNotification } from './types'
 
 const TYPE_STYLES: Record<
 	KottiNotificationCentre.NotificationType,
@@ -142,39 +133,29 @@ const TYPE_STYLES: Record<
 }
 
 export default defineComponent({
-	name: 'KtNotificationItem',
+	name: 'KtNotification',
 	components: {
 		KtButton,
 	},
-	props: {
-		notification: {
-			required: true,
-			type: Object as PropType<KottiNotificationCentre.Notification>,
-		},
-	},
+	props: makeProps(KottiNotification.propsSchema),
 
 	emits: ['delete', 'toggleRead'],
 	setup(props, { emit }) {
-		const isUnread = computed(() => props.notification.toggle === 'unread')
+		const typeStyle = computed(() => TYPE_STYLES[props.type])
 
-		const typeStyle = computed(() => TYPE_STYLES[props.notification.type])
-
-		const relativeTimestamp = computed(() =>
-			getRelativeTime(props.notification.timestamp),
-		)
+		const relativeTimestamp = computed(() => getRelativeTime(props.timestamp))
 
 		const absoluteTimestamp = computed(() =>
-			dayjs(props.notification.timestamp).format('YYYY-MM-DD HH:mm'),
+			dayjs(props.timestamp).format('YYYY-MM-DD HH:mm'),
 		)
 
 		return {
 			absoluteTimestamp,
-			isUnread,
 			onDelete: () => {
-				emit('delete', props.notification.id)
+				emit('delete')
 			},
 			onToggleRead: () => {
-				emit('toggleRead', props.notification.id)
+				emit('toggleRead')
 			},
 			relativeTimestamp,
 			typeStyle,

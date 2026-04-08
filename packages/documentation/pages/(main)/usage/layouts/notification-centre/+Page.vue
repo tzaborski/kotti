@@ -55,33 +55,6 @@
 		<KtNotificationCentre :notificationCentre="notificationStore" />
 	</CodePreview>
 
-	<h2>Types</h2>
-
-	<CodePreview
-		code='
-				<div style="display: flex; gap: var(--unit-6)">
-					<KtButton type="primary" @click="...">
-						Primary Button
-					</KtButton>
-					<KtButton type="secondary" @click="...">
-						Secondary Button
-					</KtButton>
-					<KtButton type="danger" @click="...">
-						Danger Button
-					</KtButton>
-					<KtButton @click="...">
-						Default Button
-					</KtButton>
-					<KtButton type="text" @click="...">
-						Text Button
-					</KtButton>
-				</div>
-			'
-		language="vue-html"
-	>
-		<div style="display: flex; flex-wrap: wrap; gap: var(--unit-6)" />
-	</CodePreview>
-
 	<h2>Initial Setup</h2>
 
 	This is the per-app setup process for <code>KtNotificationCentre</code>
@@ -156,8 +129,6 @@
 		store.isOpen.value // boolean
 		```
 	</MarkdownBlock>
-
-	<ComponentInfo :component="KtNotificationItem" />
 </template>
 
 <script lang="ts">
@@ -168,7 +139,6 @@ import {
 	createNotificationCentre,
 	KtButton,
 	KtNotificationCentre,
-	KtNotificationItem,
 } from '@3yourmind/kotti-ui'
 
 import CodePreview from '~/components/CodePreview.vue'
@@ -201,13 +171,11 @@ export default defineComponent({
 		ComponentInfo,
 		KtButton,
 		KtNotificationCentre,
-		KtNotificationItem,
 	},
 	setup() {
 		return {
 			addNotification,
 			KtNotificationCentre,
-			KtNotificationItem,
 			notificationStore,
 			parserHack: {
 				// HACK: parsers are angry when you say template

@@ -88,10 +88,9 @@ import { KtModal } from './kotti-modal'
 export * from './kotti-modal'
 import { KtNavbar } from './kotti-navbar'
 export * from './kotti-navbar'
-import {
-	KtNotificationCentre,
-	KtNotificationItem,
-} from './kotti-notification-centre'
+import { KtNotification } from './kotti-notification'
+export * from './kotti-notification'
+import { KtNotificationCentre } from './kotti-notification-centre'
 export * from './kotti-notification-centre'
 import { KtPagination } from './kotti-pagination'
 export * from './kotti-pagination'
@@ -162,8 +161,8 @@ export default {
 			KtLoading,
 			KtModal,
 			KtNavbar,
+			KtNotification,
 			KtNotificationCentre,
-			KtNotificationItem,
 			KtPagination,
 			KtPopover,
 			KtRow,

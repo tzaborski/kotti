@@ -54,10 +54,14 @@
 									:onDelete="() => onDelete(notification.id)"
 									:onToggleRead="() => onToggleRead(notification.id)"
 								>
-									<KtNotificationItem
-										:notification="notification"
-										@delete="onDelete"
-										@toggleRead="onToggleRead"
+									<KtNotification
+										:content="notification.content"
+										:isUnread="notification.toggle === 'unread'"
+										:timestamp="notification.timestamp"
+										:title="notification.title"
+										:type="notification.type"
+										@delete="() => onDelete(notification.id)"
+										@toggleRead="() => onToggleRead(notification.id)"
 									/>
 								</slot>
 							</template>
@@ -85,17 +89,17 @@ import { defineComponent, onBeforeUnmount, onMounted } from 'vue'
 
 import { Yoco } from '@3yourmind/yoco'
 
+import KtNotification from '../kotti-notification/KtNotification.vue'
 import { makeProps } from '../make-props'
 
 import NotificationToolbar from './components/NotificationToolbar.vue'
 import type { NotificationCentreStore } from './create-notification-centre'
-import KtNotificationItem from './KtNotificationItem.vue'
 import { KottiNotificationCentre } from './types'
 
 export default defineComponent({
 	name: 'KtNotificationCentre',
 	components: {
-		KtNotificationItem,
+		KtNotification,
 		NotificationToolbar,
 	},
 	props: makeProps(KottiNotificationCentre.propsSchema),
