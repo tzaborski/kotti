@@ -17,12 +17,7 @@
 
 	<h2>Interactive Example</h2>
 
-	<p>
-		Click the button below to open the notification centre with sample data.
-	</p>
-
-	<CodePreview
-		:code="`
+	<CodePreview :code="`
 	<${parserHack.script} setup lang=&quot;ts&quot;>
 			const notificationStore = createNotificationCentre(notifications)
 	</${parserHack.script}>
@@ -34,25 +29,13 @@
 			/>
 		<KtNotificationCentre :notificationCentre=&quot;notificationStore&quot; />
 	</${parserHack.template}>
-`"
-		language="vue-html"
-	>
-		<KtButton
-			:label="
-				unreadCount
-					? `Open Notification Centre (${unreadCount})`
-					: 'Open Notification Centre'
-			"
-			type="primary"
-			@click="notificationStore.open()"
-		/>
-		<KtButton
-			class="ml-3"
-			label="Add Notification"
-			type="primary"
-			@click="addNotification()"
-		/>
-		<KtNotificationCentre :notificationCentre="notificationStore" />
+`" language="vue-html">
+		<KtButton :label="unreadCount
+				? `Open Notification Centre (${unreadCount})`
+				: 'Open Notification Centre'
+			" type="primary" @click="notificationStore.open()" />
+		<KtButton class="ml-3" label="Add Notification" type="primary" @click="addNotification()" />
+		<KtNotificationCentre :notificationCentre="notificationStore" @notificationClick="onNotificationClick" />
 	</CodePreview>
 
 	<h2>Initial Setup</h2>
@@ -60,8 +43,7 @@
 	This is the per-app setup process for <code>KtNotificationCentre</code>
 
 	<!-- prettier-ignore -->
-	<CodePreview
-:code='`
+	<CodePreview :code='`
 				<${parserHack.template}>
 					<KtNotificationCentre :notificationCentre="notificationStore" />
 				</${parserHack.template}>
@@ -82,18 +64,14 @@
 				</${parserHack.script}>
 			`' fileName="App.vue" language="vue" />
 
-	<CodePreview
-		code='
+	<CodePreview code='
 				import { createNotificationCentre } from "@3yourmind/kotti-ui"
 
 				// create a notification centre instance, usually there should only ever be one per app
 				export const notificationStore = createNotificationCentre()
 
 
-			'
-		fileName="~/shared/notificationStore.ts"
-		language="typescript"
-	/>
+			' fileName="~/shared/notificationStore.ts" language="typescript" />
 
 	<h2>API</h2>
 
@@ -106,12 +84,12 @@
 
 		// Add a notification programmatically
 		store.add({
-				id: 'new-1',
-				title: 'New Event',
-				content: 'We are excited to announce a new event!',
-				timestamp: new Date().toISOString(),
-				type: 'info',
-				toggle: 'unread',
+		id: 'new-1',
+		title: 'New Event',
+		content: 'We are excited to announce a new event!',
+		timestamp: new Date().toISOString(),
+		type: 'info',
+		toggle: 'unread',
 		})
 
 		// Open/close the panel
@@ -134,7 +112,6 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 
-import type { KottiNotificationCentre } from '@3yourmind/kotti-ui'
 import {
 	createNotificationCentre,
 	KtButton,
@@ -146,9 +123,7 @@ import ComponentInfo from '~/components/component-info/ComponentInfo.vue'
 
 import notifications from './notifications.json'
 
-const notificationStore = createNotificationCentre(
-	notifications as unknown as KottiNotificationCentre.NotificationInput[],
-)
+const notificationStore = createNotificationCentre(notifications)
 
 const { unreadCount } = notificationStore
 
@@ -158,8 +133,7 @@ const addNotification = () => {
 		id: `new-${Date.now()}`,
 		timestamp: new Date().toISOString(),
 		title: 'New Event',
-		// toggle: 'unread',
-		// type: 'info',
+		type: 'success',
 	})
 	notificationStore.open()
 }
@@ -177,6 +151,12 @@ export default defineComponent({
 			addNotification,
 			KtNotificationCentre,
 			notificationStore,
+			onNotificationClick: (
+				notification: KottiNotificationCentre.Notification,
+			) => {
+				// eslint-disable-next-line no-alert
+				window.alert(`Clicked notification: ${JSON.stringify(notification)}`)
+			},
 			parserHack: {
 				// HACK: parsers are angry when you say template
 				script: 'script',
