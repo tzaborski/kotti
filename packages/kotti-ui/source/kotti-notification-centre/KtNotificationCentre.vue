@@ -1,43 +1,81 @@
 <template>
 	<teleport to="body">
 		<transition name="kt-notification-centre">
-			<div v-if="isOpen" aria-label="Notification Centre" class="kt-notification-centre__mask" role="dialog"
-				@click.self="onMaskClick">
+			<div
+				v-if="isOpen"
+				aria-label="Notification Centre"
+				class="kt-notification-centre__mask"
+				role="dialog"
+				@click.self="onMaskClick"
+			>
 				<div class="kt-notification-centre__panel">
 					<div class="kt-notification-centre__header">
 						<div class="kt-notification-centre__title-row">
-							<i class="yoco kt-notification-centre__icon" v-text="Yoco.Icon.BELL" />
+							<i
+								class="yoco kt-notification-centre__icon"
+								v-text="Yoco.Icon.BELL"
+							/>
 							<h2 class="kt-notification-centre__title">Notifications</h2>
-							<span v-if="unreadCount > 0" class="kt-notification-centre__count">
+							<span
+								v-if="unreadCount > 0"
+								class="kt-notification-centre__count"
+							>
 								{{ unreadCount }}
 							</span>
 						</div>
-						<KtButton aria-label="Close notification centre" helpText="Close notification centre"
-							:icon="Yoco.Icon.CLOSE" type="text" @click="close()" />
+						<KtButton
+							aria-label="Close notification centre"
+							helpText="Close notification centre"
+							:icon="Yoco.Icon.CLOSE"
+							type="text"
+							@click="close()"
+						/>
 					</div>
 
-					<NotificationToolbar :filter="filter" :sortOrder="sortOrder" :unreadCount="unreadCount"
-						@markAllRead="onMarkAllRead" @removeAll="onRemoveAll" @update:filter="onUpdateFilter"
-						@update:sortOrder="onUpdateSortOrder" />
+					<NotificationToolbar
+						:filter="filter"
+						:sortOrder="sortOrder"
+						:unreadCount="unreadCount"
+						@markAllRead="onMarkAllRead"
+						@removeAll="onRemoveAll"
+						@update:filter="onUpdateFilter"
+						@update:sortOrder="onUpdateSortOrder"
+					/>
 
 					<div class="kt-notification-centre__list">
 						<TransitionGroup name="kt-notification-centre-item">
-							<template v-for="notification in filteredNotifications" :key="notification.id">
-								<slot name="item" :notification="notification"
+							<template
+								v-for="notification in filteredNotifications"
+								:key="notification.id"
+							>
+								<slot
+									name="item"
+									:notification="notification"
 									:onDelete="() => onDelete(notification.id)"
-									:onToggleRead="() => onToggleRead(notification.id)">
-									<KtNotification :content="notification.content"
-										:isUnread="notification.toggle === 'unread'" :timestamp="notification.timestamp"
-										:title="notification.title" :type="notification.type"
+									:onToggleRead="() => onToggleRead(notification.id)"
+								>
+									<KtNotification
+										:content="notification.content"
+										:isUnread="notification.toggle === 'unread'"
+										:timestamp="notification.timestamp"
+										:title="notification.title"
+										:type="notification.type"
 										@click="onNotificationClick(notification)"
 										@delete="() => onDelete(notification.id)"
-										@toggleRead="() => onToggleRead(notification.id)" />
+										@toggleRead="() => onToggleRead(notification.id)"
+									/>
 								</slot>
 							</template>
 						</TransitionGroup>
 
-						<div v-if="filteredNotifications.length === 0" class="kt-notification-centre__empty">
-							<i class="yoco kt-notification-centre__empty-icon" v-text="Yoco.Icon.BELL" />
+						<div
+							v-if="filteredNotifications.length === 0"
+							class="kt-notification-centre__empty"
+						>
+							<i
+								class="yoco kt-notification-centre__empty-icon"
+								v-text="Yoco.Icon.BELL"
+							/>
 							<p class="kt-notification-centre__empty-text">No notifications</p>
 						</div>
 					</div>

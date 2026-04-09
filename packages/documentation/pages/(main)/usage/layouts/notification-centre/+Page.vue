@@ -17,7 +17,8 @@
 
 	<h2>Interactive Example</h2>
 
-	<CodePreview :code="`
+	<CodePreview
+		:code="`
 	<${parserHack.script} setup lang=&quot;ts&quot;>
 			const notificationStore = createNotificationCentre(notifications)
 	</${parserHack.script}>
@@ -29,13 +30,28 @@
 			/>
 		<KtNotificationCentre :notificationCentre=&quot;notificationStore&quot; />
 	</${parserHack.template}>
-`" language="vue-html">
-		<KtButton :label="unreadCount
-				? `Open Notification Centre (${unreadCount})`
-				: 'Open Notification Centre'
-			" type="primary" @click="notificationStore.open()" />
-		<KtButton class="ml-3" label="Add Notification" type="primary" @click="addNotification()" />
-		<KtNotificationCentre :notificationCentre="notificationStore" @notificationClick="onNotificationClick" />
+`"
+		language="vue-html"
+	>
+		<KtButton
+			:label="
+				unreadCount
+					? `Open Notification Centre (${unreadCount})`
+					: 'Open Notification Centre'
+			"
+			type="primary"
+			@click="notificationStore.open()"
+		/>
+		<KtButton
+			class="ml-3"
+			label="Add Notification"
+			type="primary"
+			@click="addNotification()"
+		/>
+		<KtNotificationCentre
+			:notificationCentre="notificationStore"
+			@notificationClick="onNotificationClick"
+		/>
 	</CodePreview>
 
 	<h2>Initial Setup</h2>
@@ -64,14 +80,18 @@
 				</${parserHack.script}>
 			`' fileName="App.vue" language="vue" />
 
-	<CodePreview code='
+	<CodePreview
+		code='
 				import { createNotificationCentre } from "@3yourmind/kotti-ui"
 
 				// create a notification centre instance, usually there should only ever be one per app
 				export const notificationStore = createNotificationCentre()
 
 
-			' fileName="~/shared/notificationStore.ts" language="typescript" />
+			'
+		fileName="~/shared/notificationStore.ts"
+		language="typescript"
+	/>
 
 	<h2>API</h2>
 

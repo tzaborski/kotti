@@ -1,58 +1,100 @@
 <template>
 	<div class="kt-notification-toolbar">
 		<div class="kt-notification-toolbar__search">
-			<i class="yoco kt-notification-toolbar__search-icon" v-text="Yoco.Icon.SEARCH" />
-			<input class="kt-notification-toolbar__search-input" placeholder="Search notifications..." type="text"
-				:value="filter.searchQuery" @input="onSearchInput" />
+			<i
+				class="yoco kt-notification-toolbar__search-icon"
+				v-text="Yoco.Icon.SEARCH"
+			/>
+			<input
+				class="kt-notification-toolbar__search-input"
+				placeholder="Search notifications..."
+				type="text"
+				:value="filter.searchQuery"
+				@input="onSearchInput"
+			/>
 		</div>
 
 		<div class="kt-notification-toolbar__filters">
 			<div class="kt-notification-toolbar__filter-group">
-				<KtButton size="small" :type="activeToggleFilter === 'unread' ? 'primary' : 'secondary'"
-					@click="onToggleFilter('unread')">
+				<KtButton
+					size="small"
+					:type="activeToggleFilter === 'unread' ? 'primary' : 'secondary'"
+					@click="onToggleFilter('unread')"
+				>
 					Unread
 					<span v-if="unreadCount > 0" class="kt-notification-toolbar__badge">
 						{{ unreadCount }}
 					</span>
 				</KtButton>
-				<KtButton size="small" :type="activeToggleFilter === 'read' ? 'primary' : 'secondary'"
-					@click="onToggleFilter('read')">
+				<KtButton
+					size="small"
+					:type="activeToggleFilter === 'read' ? 'primary' : 'secondary'"
+					@click="onToggleFilter('read')"
+				>
 					Read
 				</KtButton>
 			</div>
 
 			<div class="kt-notification-toolbar__filter-group">
-				<KtButton size="small" :type="activeTypeFilter === 'info' ? 'primary' : 'secondary'"
-					@click="onTypeFilter('info')">
+				<KtButton
+					size="small"
+					:type="activeTypeFilter === 'info' ? 'primary' : 'secondary'"
+					@click="onTypeFilter('info')"
+				>
 					Info
 				</KtButton>
-				<KtButton size="small" :type="activeTypeFilter === 'warning' ? 'primary' : 'secondary'"
-					@click="onTypeFilter('warning')">
+				<KtButton
+					size="small"
+					:type="activeTypeFilter === 'warning' ? 'primary' : 'secondary'"
+					@click="onTypeFilter('warning')"
+				>
 					Warning
 				</KtButton>
-				<KtButton size="small" :type="activeTypeFilter === 'success' ? 'primary' : 'secondary'"
-					@click="onTypeFilter('success')">
+				<KtButton
+					size="small"
+					:type="activeTypeFilter === 'success' ? 'primary' : 'secondary'"
+					@click="onTypeFilter('success')"
+				>
 					Success
 				</KtButton>
-				<KtButton size="small" :type="activeTypeFilter === 'error' ? 'primary' : 'secondary'"
-					@click="onTypeFilter('error')">
+				<KtButton
+					size="small"
+					:type="activeTypeFilter === 'error' ? 'primary' : 'secondary'"
+					@click="onTypeFilter('error')"
+				>
 					Error
 				</KtButton>
 			</div>
 		</div>
 
 		<div class="kt-notification-toolbar__actions">
-			<KtButton aria-label="Toggle sort order" helpText="Toggle sort order"
-				:icon="sortOrder === 'desc' ? Yoco.Icon.ARROW_DOWN : Yoco.Icon.ARROW_UP" size="small" type="text"
-				@click="onToggleSortOrder" />
+			<KtButton
+				aria-label="Toggle sort order"
+				helpText="Toggle sort order"
+				:icon="sortOrder === 'desc' ? Yoco.Icon.ARROW_DOWN : Yoco.Icon.ARROW_UP"
+				size="small"
+				type="text"
+				@click="onToggleSortOrder"
+			/>
 
-			<KtButton aria-label="Mark all as read" :icon="Yoco.Icon.CHECK" size="small" type="text"
-				@click="onMarkAllRead">
+			<KtButton
+				aria-label="Mark all as read"
+				:icon="Yoco.Icon.CHECK"
+				size="small"
+				type="text"
+				@click="onMarkAllRead"
+			>
 				Mark all as read
 			</KtButton>
 
-			<KtButton aria-label="Remove all notifications" helpText="Remove all notifications" :icon="Yoco.Icon.TRASH"
-				size="small" type="text" @click="onRemoveAll" />
+			<KtButton
+				aria-label="Remove all notifications"
+				helpText="Remove all notifications"
+				:icon="Yoco.Icon.TRASH"
+				size="small"
+				type="text"
+				@click="onRemoveAll"
+			/>
 		</div>
 	</div>
 </template>
