@@ -1,48 +1,27 @@
 <template>
-	<div
-		:aria-label="title"
-		:class="{
-			'kt-notification-item': true,
-			'kt-notification-item--is-unread': isUnread,
-		}"
-		role="article"
-	>
+	<div :aria-label="title" :class="{
+		'kt-notification-item': true,
+		'kt-notification-item--is-unread': isUnread,
+	}" role="article">
 		<!-- #item slot: replaces the entire item layout -->
-		<slot
-			:absoluteTimestamp="absoluteTimestamp"
-			:isUnread="isUnread"
-			name="item"
-			:onDelete="onDelete"
-			:onToggleRead="onToggleRead"
-			:relativeTimestamp="relativeTimestamp"
-		>
-			<div
-				class="kt-notification-item__icon"
-				:style="{
-					color: typeStyle.darkColor,
-					backgroundColor: typeStyle.backgroundColor,
-				}"
-			>
+		<slot :absoluteTimestamp="absoluteTimestamp" :isUnread="isUnread" name="item" :onDelete="onDelete"
+			:onToggleRead="onToggleRead" :relativeTimestamp="relativeTimestamp">
+			<div class="kt-notification-item__icon" :style="{
+				color: typeStyle.darkColor,
+				backgroundColor: typeStyle.backgroundColor,
+			}">
 				<i class="yoco" v-text="typeStyle.icon" />
 			</div>
 
 			<!-- #content slot: replaces the middle content area -->
 			<div class="kt-notification-item__content">
-				<slot
-					:absoluteTimestamp="absoluteTimestamp"
-					:isUnread="isUnread"
-					name="content"
-					:relativeTimestamp="relativeTimestamp"
-				>
+				<slot :absoluteTimestamp="absoluteTimestamp" :isUnread="isUnread" name="content"
+					:relativeTimestamp="relativeTimestamp">
 					<div class="kt-notification-item__header">
 						<span class="kt-notification-item__title">
 							{{ title }}
 						</span>
-						<span
-							v-if="isUnread"
-							aria-label="Unread"
-							class="kt-notification-item__unread-dot"
-						/>
+						<span v-if="isUnread" aria-label="Unread" class="kt-notification-item__unread-dot" />
 					</div>
 
 					<p class="kt-notification-item__text">
@@ -50,10 +29,7 @@
 					</p>
 
 					<div class="kt-notification-item__meta">
-						<span
-							class="kt-notification-item__timestamp"
-							:title="absoluteTimestamp"
-						>
+						<span class="kt-notification-item__timestamp" :title="absoluteTimestamp">
 							{{ relativeTimestamp }}
 						</span>
 					</div>
@@ -62,28 +38,14 @@
 
 			<!-- #actions slot: replaces the action buttons -->
 			<div class="kt-notification-item__actions" @click.stop>
-				<slot
-					:isUnread="isUnread"
-					name="actions"
-					:onDelete="onDelete"
-					:onToggleRead="onToggleRead"
-				>
-					<KtButton
-						v-if="isUnread"
-						aria-label="Mark as read"
-						helpText="Mark as read"
-						:icon="Yoco.Icon.CIRCLE_CHECK"
-						size="small"
-						type="primary"
-						@click="onToggleRead"
-					/>
-					<KtButton
-						aria-label="Delete notification"
-						helpText="Delete notification"
-						:icon="Yoco.Icon.TRASH"
-						size="small"
-						@click="onDelete"
-					/>
+				<slot :isUnread="isUnread" name="actions" :onDelete="onDelete" :onToggleRead="onToggleRead">
+					<KtButton v-if="isUnread" aria-label="Mark as read" helpText="Mark as read"
+						:icon="Yoco.Icon.CIRCLE_CHECK" size="small" type="text" @click="onToggleRead" />
+					<KtButton v-else aria-label="Mark as unread" helpText="Mark as unread"
+						:icon="Yoco.Icon.CIRCLE_CROSS" size="small" type="text" @click="onToggleRead" />
+
+					<KtButton aria-label="Delete notification" helpText="Delete notification" :icon="Yoco.Icon.TRASH"
+						size="small" @click="onDelete" />
 				</slot>
 			</div>
 		</slot>

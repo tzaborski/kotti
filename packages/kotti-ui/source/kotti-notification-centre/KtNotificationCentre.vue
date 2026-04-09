@@ -1,80 +1,43 @@
 <template>
 	<teleport to="body">
 		<transition name="kt-notification-centre">
-			<div
-				v-if="isOpen"
-				aria-label="Notification Centre"
-				class="kt-notification-centre__mask"
-				role="dialog"
-				@click.self="onMaskClick"
-			>
+			<div v-if="isOpen" aria-label="Notification Centre" class="kt-notification-centre__mask" role="dialog"
+				@click.self="onMaskClick">
 				<div class="kt-notification-centre__panel">
 					<div class="kt-notification-centre__header">
 						<div class="kt-notification-centre__title-row">
-							<i
-								class="yoco kt-notification-centre__bell-icon"
-								v-text="Yoco.Icon.BELL"
-							/>
+							<i class="yoco kt-notification-centre__icon" v-text="Yoco.Icon.BELL" />
 							<h2 class="kt-notification-centre__title">Notifications</h2>
-							<span
-								v-if="unreadCount > 0"
-								class="kt-notification-centre__count"
-							>
+							<span v-if="unreadCount > 0" class="kt-notification-centre__count">
 								{{ unreadCount }}
 							</span>
 						</div>
-						<button
-							aria-label="Close notification centre"
-							class="kt-notification-centre__close"
-							@click="close()"
-						>
-							<i class="yoco" v-text="Yoco.Icon.CLOSE" />
-						</button>
+						<KtButton aria-label="Close notification centre" helpText="Close notification centre"
+							:icon="Yoco.Icon.CLOSE" type="text" @click="close()" />
 					</div>
 
-					<NotificationToolbar
-						:filter="filter"
-						:sortOrder="sortOrder"
-						:unreadCount="unreadCount"
-						@markAllRead="onMarkAllRead"
-						@removeAll="onRemoveAll"
-						@update:filter="onUpdateFilter"
-						@update:sortOrder="onUpdateSortOrder"
-					/>
+					<NotificationToolbar :filter="filter" :sortOrder="sortOrder" :unreadCount="unreadCount"
+						@markAllRead="onMarkAllRead" @removeAll="onRemoveAll" @update:filter="onUpdateFilter"
+						@update:sortOrder="onUpdateSortOrder" />
 
 					<div class="kt-notification-centre__list">
 						<TransitionGroup name="kt-notification-centre-item">
-							<template
-								v-for="notification in filteredNotifications"
-								:key="notification.id"
-							>
-								<slot
-									name="item"
-									:notification="notification"
+							<template v-for="notification in filteredNotifications" :key="notification.id">
+								<slot name="item" :notification="notification"
 									:onDelete="() => onDelete(notification.id)"
-									:onToggleRead="() => onToggleRead(notification.id)"
-								>
-									<KtNotification
-										:content="notification.content"
-										:isUnread="notification.toggle === 'unread'"
-										:timestamp="notification.timestamp"
-										:title="notification.title"
-										:type="notification.type"
+									:onToggleRead="() => onToggleRead(notification.id)">
+									<KtNotification :content="notification.content"
+										:isUnread="notification.toggle === 'unread'" :timestamp="notification.timestamp"
+										:title="notification.title" :type="notification.type"
+										@click="onNotificationClick(notification)"
 										@delete="() => onDelete(notification.id)"
-										@toggleRead="() => onToggleRead(notification.id)"
-									/>
+										@toggleRead="() => onToggleRead(notification.id)" />
 								</slot>
 							</template>
 						</TransitionGroup>
 
-						<div
-							v-if="filteredNotifications.length === 0"
-							class="kt-notification-centre__empty"
-						>
-							<i
-								class="yoco kt-notification-centre__empty-icon"
-								v-text="Yoco.Icon.BELL"
-							/>
+						<div v-if="filteredNotifications.length === 0" class="kt-notification-centre__empty">
+							<i class="yoco kt-notification-centre__empty-icon" v-text="Yoco.Icon.BELL" />
 							<p class="kt-notification-centre__empty-text">No notifications</p>
 						</div>
 					</div>
@@ -89,6 +52,7 @@ import { defineComponent, onBeforeUnmount, onMounted } from 'vue'
 
 import { Yoco } from '@3yourmind/yoco'
 
+import KtButton from '../kotti-button/KtButton.vue'
 import KtNotification from '../kotti-notification/KtNotification.vue'
 import { makeProps } from '../make-props'
 
@@ -99,11 +63,13 @@ import { KottiNotificationCentre } from './types'
 export default defineComponent({
 	name: 'KtNotificationCentre',
 	components: {
+		KtButton,
 		KtNotification,
 		NotificationToolbar,
 	},
 	props: makeProps(KottiNotificationCentre.propsSchema),
-	setup(props) {
+	emits: ['notificationClick'],
+	setup(props, { emit }) {
 		const store = props.notificationCentre as unknown as NotificationCentreStore
 		const { isOpen, unreadCount, filteredNotifications, filter, sortOrder } =
 			store
@@ -143,6 +109,11 @@ export default defineComponent({
 			onMaskClick: () => {
 				store.close()
 			},
+			onNotificationClick: (
+				notification: KottiNotificationCentre.Notification,
+			) => {
+				emit('notificationClick', notification)
+			},
 			onRemoveAll: () => {
 				store.removeAll()
 			},
@@ -162,7 +133,7 @@ export default defineComponent({
 
 <style lang="scss">
 :root {
-	--kt-notification-centre-width: 26rem;
+	--kt-notification-centre-width: 30rem;
 	--kt-notification-centre-mask-background: rgb(0 0 0 / 50%);
 	--kt-notification-centre-shadow: var(--shadow-lg);
 }
@@ -214,14 +185,14 @@ export default defineComponent({
 		align-items: center;
 	}
 
-	&__bell-icon {
-		font-size: var(--unit-5);
+	&__icon {
+		font-size: var(--unit-6);
 		color: var(--icon-01);
 	}
 
 	&__title {
 		margin: 0;
-		font-size: var(--font-size-lg);
+		font-size: var(--font-size-xlarge);
 		font-weight: 700;
 		color: var(--text-01);
 	}
@@ -238,30 +209,6 @@ export default defineComponent({
 		color: var(--ui-background);
 		background-color: var(--interactive-01);
 		border-radius: var(--unit-2);
-	}
-
-	&__close {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: var(--unit-7);
-		height: var(--unit-7);
-		padding: 0;
-		color: var(--icon-02);
-		cursor: pointer;
-		background: none;
-		border: 0;
-		border-radius: var(--border-radius);
-		transition: all 0.15s ease;
-
-		&:hover {
-			color: var(--icon-01);
-			background-color: var(--ui-01);
-		}
-
-		.yoco {
-			font-size: var(--unit-5);
-		}
 	}
 
 	&__list {

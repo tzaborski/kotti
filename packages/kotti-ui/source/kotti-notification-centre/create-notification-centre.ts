@@ -141,6 +141,9 @@ export const createNotificationCentre = <
 
 	const close = (): void => {
 		isOpen.value = false
+
+		// Reset filters when closing the notification centre
+		resetFilter()
 	}
 
 	const toggle = (): void => {
